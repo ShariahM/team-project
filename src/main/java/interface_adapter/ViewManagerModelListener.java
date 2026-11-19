@@ -1,5 +1,5 @@
 package interface_adapter;
 
-public class ViewManagerModelListener {
-    
+public interface ViewManagerModelListener {
+    void viewChanged();
 }
