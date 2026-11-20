@@ -14,8 +14,8 @@ public class Main {
                 // .addMovieDetailUseCase()
                 // .addExploreView()
                 // .addExploreUseCase()
-                // .addStatsView()
-                // .addStatsUseCase()
+                .addStatsView()
+                .addStatsUseCase()
                 .build();
 
         application.pack();
