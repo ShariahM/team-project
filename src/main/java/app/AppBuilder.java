@@ -2,6 +2,7 @@ package app;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.watchlist.WatchlistViewModel;
+import view.MovieDetailView;
 import view.ViewManager;
 import view.WatchlistView;
 
@@ -72,6 +73,11 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addMovieDetailView(MovieDetailView view) {
+        cardPanel.add(view, MovieDetailView.VIEW_NAME);
+        return this;
+    }
+
     public AppBuilder addMovieDetailUseCase() {
         // final MovieDetailOutputBoundary movieDetailOutputBoundary = new MovieDetailPresenter(viewManagerModel, movieDetailViewModel);
         // final MovieDetailInputBoundary movieDetailInteractor = new MovieDetailInteractor(dataAccessObject, movieDetailOutputBoundary);
@@ -111,12 +117,16 @@ public class AppBuilder {
     }
 
     public JFrame build() {
+        return build(WatchlistViewModel.VIEW_NAME);
+    }
+
+    public JFrame build(String initialView) {
         final JFrame application = new JFrame("Movie Diary");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(WatchlistViewModel.VIEW_NAME);
+        viewManagerModel.setState(initialView);
         viewManagerModel.notifyViewChanged();
 
         return application;
