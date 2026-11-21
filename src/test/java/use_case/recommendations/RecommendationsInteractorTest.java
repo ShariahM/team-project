@@ -100,10 +100,30 @@ class RecommendationsInteractorTest {
     }
 
     @Test
-    void tiesAreBrokenByTitle() {
+    void tiesKeepTmdbOrder() {
         final FakeRecommendations tmdb = new FakeRecommendations()
-                .add(1, movie(10, "beta"), movie(11, "Alpha"));
+                .add(1, movie(10, "Zeta"), movie(11, "Alpha"), movie(12, "Mu"));
         final RecordingPresenter presenter = run(List.of(review(1, "Seed", 4.0)), tmdb);
+        assertEquals(List.of("Zeta", "Alpha", "Mu"), titles(presenter));
+    }
+
+    @Test
+    void tiesUseBestPositionAcrossSeeds() {
+        // Zulu and Alpha both score 4 + 4 = 8. Zulu is 4th for seed 1 but 1st for seed 2 (best = 0);
+        // Alpha is 2nd for both (best = 1). So Zulu wins even though Alpha comes first alphabetically.
+        final FakeRecommendations tmdb = new FakeRecommendations()
+                .add(1, movie(20, "Other A"), movie(11, "Alpha"), movie(21, "Other B"), movie(10, "Zulu"))
+                .add(2, movie(10, "Zulu"), movie(11, "Alpha"));
+        final RecordingPresenter presenter = run(List.of(review(1, "One", 4.0), review(2, "Two", 4.0)), tmdb);
+        assertEquals(List.of("Zulu", "Alpha", "Other A", "Other B"), titles(presenter));
+    }
+
+    @Test
+    void sameScoreAndPositionFallsBackToTitle() {
+        final FakeRecommendations tmdb = new FakeRecommendations()
+                .add(1, movie(10, "beta"))
+                .add(2, movie(11, "Alpha"));
+        final RecordingPresenter presenter = run(List.of(review(1, "One", 4.0), review(2, "Two", 4.0)), tmdb);
         assertEquals(List.of("Alpha", "beta"), titles(presenter));
     }
 

@@ -17,6 +17,8 @@ import java.util.Set;
  *
  * <p>Each highly rated movie is a "seed". A candidate's score is the sum of the ratings of the
  * seeds that recommended it, so a movie recommended by several favourites ranks higher.
+ * Ties keep TMDB's own relevance order (the best position the movie had in any seed's list),
+ * then fall back to title so the order is always the same.
  */
 public class RecommendationsInteractor implements RecommendationsInputBoundary {
     public static final double HIGH_RATING_THRESHOLD = 4.0;
@@ -67,16 +69,19 @@ public class RecommendationsInteractor implements RecommendationsInputBoundary {
                 return;
             }
 
-            for (Movie movie : recommended) {
+            for (int position = 0; position < recommended.size(); position++) {
+                final Movie movie = recommended.get(position);
                 if (alreadyRated.contains(movie.getMovieID())) {
                     continue;
                 }
-                candidates.computeIfAbsent(movie.getMovieID(), id -> new Candidate(movie)).addSeed(seed);
+                candidates.computeIfAbsent(movie.getMovieID(), id -> new Candidate(movie))
+                        .addSeed(seed, position);
             }
         }
 
         final List<Candidate> ranked = new ArrayList<>(candidates.values());
         ranked.sort(Comparator.comparingDouble(Candidate::getScore).reversed()
+                .thenComparingInt(Candidate::getBestPosition)
                 .thenComparing(candidate -> candidate.movie.getTitle(), String.CASE_INSENSITIVE_ORDER));
 
         final List<RecommendedMovie> results = new ArrayList<>();
@@ -111,18 +116,26 @@ public class RecommendationsInteractor implements RecommendationsInputBoundary {
         private final Movie movie;
         private final Set<Integer> seedIDs = new HashSet<>();
         private double score;
+        private int bestPosition = Integer.MAX_VALUE;
         private String becauseYouLiked;
 
         Candidate(Movie movie) {
             this.movie = movie;
         }
 
-        void addSeed(Review seed) {
+        /**
+         * Records that a seed recommended this movie.
+         *
+         * @param seed the highly rated movie that recommended it
+         * @param position where it appeared in that seed's TMDB list (0 = most relevant)
+         */
+        void addSeed(Review seed, int position) {
             // Ignore a seed listing the same movie twice.
             if (!seedIDs.add(seed.getMovie().getMovieID())) {
                 return;
             }
             score += seed.getRating();
+            bestPosition = Math.min(bestPosition, position);
             // Seeds arrive best-rated first, so the first one is the best explanation.
             if (becauseYouLiked == null) {
                 becauseYouLiked = seed.getMovie().getTitle();
@@ -131,6 +144,10 @@ public class RecommendationsInteractor implements RecommendationsInputBoundary {
 
         double getScore() {
             return score;
+        }
+
+        int getBestPosition() {
+            return bestPosition;
         }
     }
 }
