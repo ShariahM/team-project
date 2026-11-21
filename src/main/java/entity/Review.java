@@ -1,13 +1,30 @@
 package entity;
 
+import java.time.LocalDate;
+
 public class Review {
     private final Movie movie;
     private double rating;
     private String review;
+    private LocalDate dateWatched;
+
     public Review(Movie movie, double rating, String review) {
+        this(movie, rating, review, null);
+    }
+
+    public Review(Movie movie, double rating, String review, LocalDate dateWatched) {
         this.movie = movie;
         this.rating = rating;
         this.review = review;
+        this.dateWatched = dateWatched;
+    }
+
+    public LocalDate getDateWatched() {
+        return dateWatched;
+    }
+
+    public void setDateWatched(LocalDate dateWatched) {
+        this.dateWatched = dateWatched;
     }
 
     public double getRating() {
