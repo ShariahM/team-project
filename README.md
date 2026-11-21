@@ -26,6 +26,25 @@ Search for a movie, view its details, save it to a watchlist or viewing history,
 and use saved ratings and activity to show basic recommendations and statistics.
 Each teammate owns the corresponding feature above.
 
+## Use Cases
+
+### Use Case 3: Get Recommendations (MVP, lead: Benjamin Kaganovitch)
+
+**Actor:** User
+
+**Main flow:**
+1. The user opens the Recommendations page and asks for recommendations.
+2. The app finds the movies the user rated 4 stars or higher (up to their 5 best rated).
+3. For each of those movies, the app looks up similar movies.
+4. The app leaves out movies the user has already rated and lists each movie only once.
+5. The app ranks the movies, putting first the ones recommended by more (and higher-rated) favourites.
+6. The app shows the top 10, each with the favourite it came from ("because you liked ...").
+
+**Alternative flows:**
+- 2a. The user has not rated any movie 4 stars or higher: the app asks them to rate some movies 4 stars or higher first.
+- 3a. The movie information cannot be loaded (for example, no internet connection): the app shows an error message and the user can try again.
+- 4a. Every suggested movie has already been rated: the app says there are no new recommendations and suggests rating more movies.
+
 ## Technology and API
 
 - **Java 11**, **Swing**, and **Maven**.
