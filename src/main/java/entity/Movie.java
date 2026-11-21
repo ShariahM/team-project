@@ -10,8 +10,13 @@ public class Movie {
     private final String director;
     private final String overview;
     private final String posterURL;
+    private final int runtimeMinutes;
 
     public Movie(int movieID, String title, int releaseYear, Set<String> genres, String director, String overview, String posterURL) {
+        this(movieID, title, releaseYear, genres, director, overview, posterURL, 0);
+    }
+
+    public Movie(int movieID, String title, int releaseYear, Set<String> genres, String director, String overview, String posterURL, int runtimeMinutes) {
         this.movieID = movieID;
         this.title = title;
         this.releaseYear = releaseYear;
@@ -19,6 +24,11 @@ public class Movie {
         this.director = director;
         this.overview = overview;
         this.posterURL = posterURL;
+        this.runtimeMinutes = runtimeMinutes;
+    }
+
+    public int getRuntimeMinutes() {
+        return runtimeMinutes;
     }
 
     public int getMovieID() {
