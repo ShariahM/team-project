@@ -45,6 +45,17 @@ Each teammate owns the corresponding feature above.
 - 3a. The movie information cannot be loaded (for example, no internet connection): the app shows an error message and the user can try again.
 - 4a. Every suggested movie has already been rated: the app says there are no new recommendations and suggests rating more movies.
 
+**Scoring example:** a movie's score is the sum of the ratings of the favourites that recommended it.
+Say the user rated *Arrival* 4 stars, *Interstellar* 4 stars and *Inception* 5 stars.
+
+| Candidate | Recommended by | Score |
+|---|---|---|
+| *Contact* | *Arrival* (4) and *Interstellar* (4) | 4 + 4 = **8** |
+| *Tenet* | *Inception* (5) only | **5** |
+
+*Contact* ranks above *Tenet*: two favourites agreeing on it counts for more than one favourite, even the
+highest-rated one. If two movies have the same score, the one TMDB lists as more relevant comes first.
+
 ## Technology and API
 
 - **Java 11**, **Swing**, and **Maven**.
