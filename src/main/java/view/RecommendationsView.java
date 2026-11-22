@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.concurrent.ExecutionException;
 
 public class RecommendationsView extends JPanel implements RecommendationsViewModelListener {
 
@@ -90,8 +91,24 @@ public class RecommendationsView extends JPanel implements RecommendationsViewMo
             @Override
             protected void done() {
                 getRecommendationsButton.setEnabled(true);
+                try {
+                    // Rethrows anything the use case threw, so a crash is not left as "Loading...".
+                    get();
+                } catch (InterruptedException exception) {
+                    Thread.currentThread().interrupt();
+                    showError("Loading recommendations was interrupted.");
+                } catch (ExecutionException exception) {
+                    final Throwable cause = exception.getCause();
+                    final String detail = cause.getMessage() != null ? cause.getMessage() : cause.toString();
+                    showError("Something went wrong loading recommendations: " + detail);
+                }
             }
         }.execute();
+    }
+
+    private void showError(String message) {
+        messageLabel.setForeground(Color.RED);
+        messageLabel.setText(message);
     }
 
     @Override
@@ -105,8 +122,7 @@ public class RecommendationsView extends JPanel implements RecommendationsViewMo
             }
 
             if (state.getErrorMessage() != null) {
-                messageLabel.setForeground(Color.RED);
-                messageLabel.setText(state.getErrorMessage());
+                showError(state.getErrorMessage());
             } else {
                 messageLabel.setForeground(Color.DARK_GRAY);
                 messageLabel.setText(listModel.size() + " recommendations");
