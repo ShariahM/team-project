@@ -138,7 +138,7 @@ public class AppBuilder {
         final RecommendationsInteractor recommendationsInteractor = new RecommendationsInteractor(
                 InMemoryRatedMoviesDataAccessObject.withSampleRatings(),
                 new TmdbRecommendationsDataAccessObject(),
-                new RecommendationsPresenter(viewManagerModel, recommendationsViewModel));
+                new RecommendationsPresenter(recommendationsViewModel));
         recommendationsView.setRecommendationsController(new RecommendationsController(recommendationsInteractor));
         return this;
     }

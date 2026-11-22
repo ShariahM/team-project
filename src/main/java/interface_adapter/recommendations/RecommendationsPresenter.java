@@ -1,6 +1,5 @@
 package interface_adapter.recommendations;
 
-import interface_adapter.ViewManagerModel;
 import use_case.recommendations.RecommendationsOutputBoundary;
 import use_case.recommendations.RecommendationsOutputData;
 import use_case.recommendations.RecommendedMovie;
@@ -8,13 +7,14 @@ import use_case.recommendations.RecommendedMovie;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Updates the recommendations view model. It does not switch screens: the user is already on
+ * the Recommendations view when they ask, and this runs on the view's background thread.
+ */
 public class RecommendationsPresenter implements RecommendationsOutputBoundary {
-    private final ViewManagerModel viewManagerModel;
     private final RecommendationsViewModel recommendationsViewModel;
 
-    public RecommendationsPresenter(ViewManagerModel viewManagerModel,
-                                    RecommendationsViewModel recommendationsViewModel) {
-        this.viewManagerModel = viewManagerModel;
+    public RecommendationsPresenter(RecommendationsViewModel recommendationsViewModel) {
         this.recommendationsViewModel = recommendationsViewModel;
     }
 
@@ -28,7 +28,7 @@ public class RecommendationsPresenter implements RecommendationsOutputBoundary {
         final RecommendationsState state = recommendationsViewModel.getState();
         state.setRecommendations(lines);
         state.setErrorMessage(null);
-        showView();
+        recommendationsViewModel.notifyStateChanged();
     }
 
     @Override
@@ -36,18 +36,12 @@ public class RecommendationsPresenter implements RecommendationsOutputBoundary {
         final RecommendationsState state = recommendationsViewModel.getState();
         state.setRecommendations(new ArrayList<>());
         state.setErrorMessage(errorMessage);
-        showView();
+        recommendationsViewModel.notifyStateChanged();
     }
 
     /** e.g. "Tenet (2020) - because you liked Inception". */
     static String format(RecommendedMovie movie) {
         final String year = movie.getReleaseYear() > 0 ? " (" + movie.getReleaseYear() + ")" : "";
         return movie.getTitle() + year + " - because you liked " + movie.getBecauseYouLiked();
-    }
-
-    private void showView() {
-        recommendationsViewModel.notifyStateChanged();
-        viewManagerModel.setState(RecommendationsViewModel.VIEW_NAME);
-        viewManagerModel.notifyViewChanged();
     }
 }
