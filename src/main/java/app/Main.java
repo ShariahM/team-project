@@ -16,6 +16,8 @@ public class Main {
                 // .addExploreUseCase()
                 // .addStatsView()
                 // .addStatsUseCase()
+                .addRecommendationsView()
+                .addRecommendationsUseCase()
                 .build();
 
         application.pack();

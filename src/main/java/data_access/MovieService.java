@@ -141,6 +141,21 @@ public class MovieService {
     }
 
     /**
+     * Retrieves TMDB's recommendations for a movie.
+     *
+     * @param movieId the TMDB movie ID
+     * @return the recommended movies
+     * @throws IllegalArgumentException if the movie ID is not positive
+     * @throws IOException if the request fails or TMDB returns an error response
+     * @throws InterruptedException if the request is interrupted
+     */
+    public List<Movie> getRecommendations(int movieId) throws IOException, InterruptedException {
+        validateMovieId(movieId);
+        JsonObject response = getJsonObject("/movie/" + movieId + "/recommendations");
+        return MovieFactory.createMovies(getResults(response));
+    }
+
+    /**
      * Sends a GET request to TMDB and parses its JSON object response.
      *
      * @param path the endpoint path, including any query string
