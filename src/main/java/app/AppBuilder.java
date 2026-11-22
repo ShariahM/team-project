@@ -1,7 +1,15 @@
 package app;
 
+import data_access.MovieService;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.explore.ExploreController;
+import interface_adapter.explore.ExplorePresenter;
+import interface_adapter.explore.ExploreViewModel;
 import interface_adapter.watchlist.WatchlistViewModel;
+import use_case.explore.ExploreInputBoundary;
+import use_case.explore.ExploreInteractor;
+import use_case.explore.ExploreOutputBoundary;
+import view.ExploreView;
 import view.ViewManager;
 import view.WatchlistView;
 
@@ -19,14 +27,14 @@ public class AppBuilder {
     private WatchlistView watchlistView;
     private WatchlistViewModel watchlistViewModel;
 
+    private ExploreView exploreView;
+    private ExploreViewModel exploreViewModel;
+
     // private SearchViewModel searchViewModel;
     // private SearchView searchView;
 
     // private MovieDetailViewModel movieDetailViewModel;
     // private MovieDetailView movieDetailView;
-
-    // private ExploreViewModel exploreViewModel;
-    // private ExploreView exploreView;
 
     // private StatsViewModel statsViewModel;
     // private StatsView statsView;
@@ -81,17 +89,21 @@ public class AppBuilder {
     }
 
     public AppBuilder addExploreView() {
-        // exploreViewModel = new ExploreViewModel();
-        // exploreView = new ExploreView(exploreViewModel);
-        // cardPanel.add(exploreView, ExploreViewModel.VIEW_NAME);
+        exploreViewModel = new ExploreViewModel();
+        exploreView = new ExploreView(exploreViewModel);
+        cardPanel.add(exploreView, ExploreViewModel.VIEW_NAME);
         return this;
     }
 
     public AppBuilder addExploreUseCase() {
-        // final ExploreOutputBoundary exploreOutputBoundary = new ExplorePresenter(viewManagerModel, exploreViewModel);
-        // final ExploreInputBoundary exploreInteractor = new ExploreInteractor(dataAccessObject, exploreOutputBoundary);
-        // final ExploreController exploreController = new ExploreController(exploreInteractor);
-        // exploreView.setExploreController(exploreController);
+        if (exploreView == null || exploreViewModel == null) {
+            throw new IllegalStateException("Call addExploreView() before addExploreUseCase().");
+        }
+
+        final ExploreOutputBoundary presenter = new ExplorePresenter(viewManagerModel, exploreViewModel);
+        final ExploreInputBoundary interactor = new ExploreInteractor(new MovieService(), presenter);
+        final ExploreController controller = new ExploreController(interactor);
+        exploreView.setExploreController(controller);
         return this;
     }
 
@@ -116,7 +128,9 @@ public class AppBuilder {
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(WatchlistViewModel.VIEW_NAME);
+        viewManagerModel.setState(exploreView == null
+                ? WatchlistViewModel.VIEW_NAME
+                : ExploreViewModel.VIEW_NAME);
         viewManagerModel.notifyViewChanged();
 
         return application;

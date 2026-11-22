@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import entity.Movie;
 import io.github.cdimascio.dotenv.Dotenv;
+import use_case.explore.ExploreDataAccessInterface;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Sends requests to TMDB's version 3 API.
  */
-public class MovieService {
+public class MovieService implements ExploreDataAccessInterface {
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(20);
 
