@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.MovieDetailState.MovieDetailState;
-import interface_adapter.MovieDetailState.MovieDetailViewModel;
-import interface_adapter.MovieDetailState.MovieDetailViewModelListener;
+import interface_adapter.MovieDetail.MovieDetailState;
+import interface_adapter.MovieDetail.MovieDetailViewModel;
+import interface_adapter.MovieDetail.MovieDetailViewModelListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -22,11 +22,12 @@ public class MovieDetailView extends JPanel implements MovieDetailViewModelListe
     private final JLabel rating = new JLabel();
 
     public MovieDetailView(MovieDetailViewModel viewModel) {
-        super(new BorderLayout(20, 0));
+        super(new BorderLayout());
         this.viewModel = viewModel;
         viewModel.addListener(this);
         setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
-        add(new JLabel("Poster unavailable"), BorderLayout.WEST);
+        JPanel content = new JPanel(new BorderLayout(20, 0));
+        content.add(new JLabel("Poster unavailable"), BorderLayout.WEST);
 
         JPanel details = new JPanel();
         details.setLayout(new BoxLayout(details, BoxLayout.Y_AXIS));
@@ -38,7 +39,8 @@ public class MovieDetailView extends JPanel implements MovieDetailViewModelListe
         details.add(cast);
         details.add(watched);
         details.add(rating);
-        add(details, BorderLayout.CENTER);
+        content.add(details, BorderLayout.CENTER);
+        add(content, BorderLayout.NORTH);
         stateChanged();
     }
 

@@ -1,4 +1,4 @@
-package interface_adapter.MovieDetailState;
+package interface_adapter.MovieDetail;
 
 import java.util.List;
 
