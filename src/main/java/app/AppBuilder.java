@@ -1,6 +1,8 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.MovieDetailState.MovieDetailState;
+import interface_adapter.MovieDetailState.MovieDetailViewModel;
 import interface_adapter.watchlist.WatchlistViewModel;
 import view.MovieDetailView;
 import view.ViewManager;
@@ -67,14 +69,14 @@ public class AppBuilder {
     }
 
     public AppBuilder addMovieDetailView() {
-        // movieDetailViewModel = new MovieDetailViewModel();
-        // movieDetailView = new MovieDetailView(movieDetailViewModel);
-        // cardPanel.add(movieDetailView, MovieDetailViewModel.VIEW_NAME);
-        return this;
+        return addMovieDetailView(new MovieDetailState());
     }
 
-    public AppBuilder addMovieDetailView(MovieDetailView view) {
-        cardPanel.add(view, MovieDetailView.VIEW_NAME);
+    public AppBuilder addMovieDetailView(MovieDetailState state) {
+        MovieDetailViewModel viewModel = new MovieDetailViewModel();
+        viewModel.setState(state);
+        MovieDetailView view = new MovieDetailView(viewModel);
+        cardPanel.add(view, MovieDetailViewModel.VIEW_NAME);
         return this;
     }
 
