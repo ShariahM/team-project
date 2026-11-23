@@ -1,8 +1,8 @@
 package view;
 
-import interface_adapter.MovieDetail.MovieDetailState;
-import interface_adapter.MovieDetail.MovieDetailViewModel;
-import interface_adapter.MovieDetail.MovieDetailViewModelListener;
+import interface_adapter.movie_detail.MovieDetailState;
+import interface_adapter.movie_detail.MovieDetailViewModel;
+import interface_adapter.movie_detail.MovieDetailViewModelListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;

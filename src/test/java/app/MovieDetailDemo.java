@@ -1,7 +1,7 @@
 package app;
 
-import interface_adapter.MovieDetail.MovieDetailState;
-import interface_adapter.MovieDetail.MovieDetailViewModel;
+import interface_adapter.movie_detail.MovieDetailState;
+import interface_adapter.movie_detail.MovieDetailViewModel;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;

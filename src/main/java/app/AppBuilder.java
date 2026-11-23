@@ -1,8 +1,8 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.MovieDetail.MovieDetailState;
-import interface_adapter.MovieDetail.MovieDetailViewModel;
+import interface_adapter.movie_detail.MovieDetailState;
+import interface_adapter.movie_detail.MovieDetailViewModel;
 import interface_adapter.watchlist.WatchlistViewModel;
 import view.MovieDetailView;
 import view.ViewManager;

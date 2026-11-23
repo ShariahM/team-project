@@ -1,4 +1,4 @@
-package interface_adapter.MovieDetail;
+package interface_adapter.movie_detail;
 
 import java.util.ArrayList;
 import java.util.List;
