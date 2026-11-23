@@ -8,10 +8,20 @@ import javax.swing.SwingUtilities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Converts explore use-case output into view-model state.
+ */
 public class ExplorePresenter implements ExploreOutputBoundary {
     private final ViewManagerModel viewManagerModel;
     private final ExploreViewModel exploreViewModel;
 
+    /**
+     * Creates a presenter for the explore screen.
+     *
+     * @param viewManagerModel model used to display the explore screen
+     * @param exploreViewModel model containing search results and status
+     * @throws IllegalArgumentException if either model is {@code null}
+     */
     public ExplorePresenter(ViewManagerModel viewManagerModel, ExploreViewModel exploreViewModel) {
         if (viewManagerModel == null) {
             throw new IllegalArgumentException("View manager model must not be null.");
@@ -23,6 +33,12 @@ public class ExplorePresenter implements ExploreOutputBoundary {
         this.exploreViewModel = exploreViewModel;
     }
 
+    /**
+     * Converts successful search output into view-model state.
+     *
+     * @param outputData query and matching movie details
+     * @throws IllegalArgumentException if output data is {@code null}
+     */
     @Override
     public void prepareSuccessView(ExploreOutputData outputData) {
         if (outputData == null) {
@@ -46,6 +62,11 @@ public class ExplorePresenter implements ExploreOutputBoundary {
         showExploreView();
     }
 
+    /**
+     * Prepares view-model state containing a search error.
+     *
+     * @param errorMessage error message to show
+     */
     @Override
     public void prepareFailView(String errorMessage) {
         final ExploreState state = new ExploreState();
@@ -55,6 +76,9 @@ public class ExplorePresenter implements ExploreOutputBoundary {
         showExploreView();
     }
 
+    /**
+     * Notifies the view model and selects the explore card on the Swing event thread.
+     */
     private void showExploreView() {
         final Runnable update = () -> {
             exploreViewModel.notifyStateChanged();

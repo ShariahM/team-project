@@ -22,6 +22,9 @@ import java.awt.Component;
 import java.awt.Font;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Swing view for searching movies and displaying matching results.
+ */
 public class ExploreView extends JPanel implements ExploreViewModelListener {
     private final ExploreViewModel exploreViewModel;
     private final JTextField queryField = new JTextField(30);
@@ -31,6 +34,12 @@ public class ExploreView extends JPanel implements ExploreViewModelListener {
 
     private ExploreController exploreController;
 
+    /**
+     * Creates the movie-search form and results list.
+     *
+     * @param exploreViewModel model supplying search state
+     * @throws IllegalArgumentException if the view model is {@code null}
+     */
     public ExploreView(ExploreViewModel exploreViewModel) {
         if (exploreViewModel == null) {
             throw new IllegalArgumentException("Explore view model must not be null.");
@@ -70,10 +79,18 @@ public class ExploreView extends JPanel implements ExploreViewModelListener {
         stateChanged();
     }
 
+    /**
+     * Sets the controller invoked when the user submits a search.
+     *
+     * @param exploreController controller handling movie searches
+     */
     public void setExploreController(ExploreController exploreController) {
         this.exploreController = exploreController;
     }
 
+    /**
+     * Refreshes the search field, results list, and status text from the view model.
+     */
     @Override
     public void stateChanged() {
         if (!SwingUtilities.isEventDispatchThread()) {
@@ -102,6 +119,9 @@ public class ExploreView extends JPanel implements ExploreViewModelListener {
         }
     }
 
+    /**
+     * Starts a search for the title currently entered in the form.
+     */
     private void searchMovies() {
         if (exploreController == null) {
             statusLabel.setText("Movie search is not available.");
@@ -144,12 +164,28 @@ public class ExploreView extends JPanel implements ExploreViewModelListener {
         }.execute();
     }
 
+    /**
+     * Renders a movie title and release year as a list row.
+     */
     private static class MovieRenderer extends JLabel implements ListCellRenderer<ExploreState.MovieResult> {
+        /**
+         * Creates a renderer with an opaque background and row padding.
+         */
         MovieRenderer() {
             setOpaque(true);
             setBorder(BorderFactory.createEmptyBorder(6, 8, 6, 8));
         }
 
+        /**
+         * Configures the label used to display a search result.
+         *
+         * @param list list whose result is being rendered
+         * @param movie result to display
+         * @param index row index
+         * @param isSelected whether the row is selected
+         * @param cellHasFocus whether the row has focus
+         * @return this label configured for the result
+         */
         @Override
         public Component getListCellRendererComponent(JList<? extends ExploreState.MovieResult> list,
                                                       ExploreState.MovieResult movie, int index,

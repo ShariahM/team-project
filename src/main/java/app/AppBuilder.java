@@ -88,6 +88,11 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Creates and registers the movie-search view.
+     *
+     * @return this builder for chaining
+     */
     public AppBuilder addExploreView() {
         exploreViewModel = new ExploreViewModel();
         exploreView = new ExploreView(exploreViewModel);
@@ -95,6 +100,12 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Connects the explore view to the TMDB-backed movie-search use case.
+     *
+     * @return this builder for chaining
+     * @throws IllegalStateException if {@link #addExploreView()} has not been called
+     */
     public AppBuilder addExploreUseCase() {
         if (exploreView == null || exploreViewModel == null) {
             throw new IllegalStateException("Call addExploreView() before addExploreUseCase().");
@@ -122,6 +133,11 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Builds the application window and selects the initial view.
+     *
+     * @return configured application frame
+     */
     public JFrame build() {
         final JFrame application = new JFrame("Movie Diary");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
