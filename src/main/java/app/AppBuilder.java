@@ -1,7 +1,15 @@
 package app;
 
+import data_access.MovieService;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.explore.ExploreController;
+import interface_adapter.explore.ExplorePresenter;
+import interface_adapter.explore.ExploreViewModel;
 import interface_adapter.watchlist.WatchlistViewModel;
+import use_case.explore.ExploreInputBoundary;
+import use_case.explore.ExploreInteractor;
+import use_case.explore.ExploreOutputBoundary;
+import view.ExploreView;
 import view.ViewManager;
 import view.WatchlistView;
 
@@ -19,14 +27,14 @@ public class AppBuilder {
     private WatchlistView watchlistView;
     private WatchlistViewModel watchlistViewModel;
 
+    private ExploreView exploreView;
+    private ExploreViewModel exploreViewModel;
+
     // private SearchViewModel searchViewModel;
     // private SearchView searchView;
 
     // private MovieDetailViewModel movieDetailViewModel;
     // private MovieDetailView movieDetailView;
-
-    // private ExploreViewModel exploreViewModel;
-    // private ExploreView exploreView;
 
     // private StatsViewModel statsViewModel;
     // private StatsView statsView;
@@ -80,18 +88,33 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Creates and registers the movie-search view.
+     *
+     * @return this builder for chaining
+     */
     public AppBuilder addExploreView() {
-        // exploreViewModel = new ExploreViewModel();
-        // exploreView = new ExploreView(exploreViewModel);
-        // cardPanel.add(exploreView, ExploreViewModel.VIEW_NAME);
+        exploreViewModel = new ExploreViewModel();
+        exploreView = new ExploreView(exploreViewModel);
+        cardPanel.add(exploreView, ExploreViewModel.VIEW_NAME);
         return this;
     }
 
+    /**
+     * Connects the explore view to the TMDB-backed movie-search use case.
+     *
+     * @return this builder for chaining
+     * @throws IllegalStateException if {@link #addExploreView()} has not been called
+     */
     public AppBuilder addExploreUseCase() {
-        // final ExploreOutputBoundary exploreOutputBoundary = new ExplorePresenter(viewManagerModel, exploreViewModel);
-        // final ExploreInputBoundary exploreInteractor = new ExploreInteractor(dataAccessObject, exploreOutputBoundary);
-        // final ExploreController exploreController = new ExploreController(exploreInteractor);
-        // exploreView.setExploreController(exploreController);
+        if (exploreView == null || exploreViewModel == null) {
+            throw new IllegalStateException("Call addExploreView() before addExploreUseCase().");
+        }
+
+        final ExploreOutputBoundary presenter = new ExplorePresenter(viewManagerModel, exploreViewModel);
+        final ExploreInputBoundary interactor = new ExploreInteractor(new MovieService(), presenter);
+        final ExploreController controller = new ExploreController(interactor);
+        exploreView.setExploreController(controller);
         return this;
     }
 
@@ -110,13 +133,20 @@ public class AppBuilder {
         return this;
     }
 
+    /**
+     * Builds the application window and selects the initial view.
+     *
+     * @return configured application frame
+     */
     public JFrame build() {
         final JFrame application = new JFrame("Movie Diary");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         application.add(cardPanel);
 
-        viewManagerModel.setState(WatchlistViewModel.VIEW_NAME);
+        viewManagerModel.setState(exploreView == null
+                ? WatchlistViewModel.VIEW_NAME
+                : ExploreViewModel.VIEW_NAME);
         viewManagerModel.notifyViewChanged();
 
         return application;
